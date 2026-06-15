@@ -1,51 +1,54 @@
 export async function onRequestPost(context) {
   try {
-    const { request } = context;
+    const { request, env } = context;
     const body = await request.json();
     const { message, user_vibe } = body;
 
+    const apiKey = env.DEEPSEEK_API_KEY;
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: "Missing API Key. Please set DEEPSEEK_API_KEY in environment variables." }), { 
+        status: 500, 
+        headers: { "Content-Type": "application/json" } 
+      });
+    }
+
     if (!message || !user_vibe) {
-        return new Response(JSON.stringify({ 
-            error: "Missing message or user_vibe parameter" 
-        }), { 
+        return new Response(JSON.stringify({ error: "Missing message or user_vibe parameter" }), { 
             status: 400, 
             headers: { "Content-Type": "application/json" } 
           });
     }
 
-    // System prompt defining the AI persona and context
     const systemPrompt = `คุณคือ "พี่แนะแนว" เป็นพี่แนะแนวการศึกษาที่ใจดี อบอุ่น และเข้าใจวัยรุ่น คุณกำลังให้คำปรึกษาเด็ก ม.6 ที่กำลังค้นหาตัวเอง โดยน้องคนนี้ทำแบบทดสอบและพบว่าตนเองมีบุคลิกภาพแบบ "${user_vibe}" 
-กรุณาให้คำแนะนำที่เหมาะสมกับบุคลิกภาพนี้ ตอบอย่างเป็นกันเอง ใช้ภาษาที่วัยรุ่นเข้าใจง่าย ให้กำลังใจ และมีสาระ ไม่ต้องตอบยาวเกินไป เอาแบบพอดีๆ เหมือนแชตคุยกันในแอปพลิเคชัน`;
+กรุณาให้คำแนะนำที่เหมาะสมกับบุคลิกภาพนี้ ตอบอย่างเป็นกันเอง ใช้ภาษาที่วัยรุ่นเข้าใจง่าย ให้กำลังใจ และมีสาระ`;
 
-    // Make request to Pollinations AI (Free API, No API Key required!)
-    const response = await fetch("https://text.pollinations.ai/", {
+    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
+        model: "deepseek-chat",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: message }
-        ],
-        model: "openai",
-        seed: Math.floor(Math.random() * 1000000)
+        ]
       })
     });
 
+    const data = await response.json();
+    
     if (!response.ok) {
-        return new Response(JSON.stringify({ 
-            error: "Failed to fetch from AI provider" 
-        }), { 
+        return new Response(JSON.stringify({ error: data.error?.message || "Failed to fetch from DeepSeek API" }), { 
             status: response.status, 
             headers: { "Content-Type": "application/json" } 
         });
     }
 
-    // Pollinations returns plain text directly
-    const replyText = await response.text();
+    const reply = data.choices[0].message.content;
     
-    return new Response(JSON.stringify({ reply: replyText }), {
+    return new Response(JSON.stringify({ reply }), {
       status: 200,
       headers: { "Content-Type": "application/json" }
     });
