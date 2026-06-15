@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourVibe - ค้นหาตัวเอง</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: blob 7s infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <!-- Animated Background Blobs -->
+    <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-blob"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-50 animate-blob animation-delay-4000"></div>
+
+    <!-- Main Container -->
+    <div class="max-w-md w-full glass-panel rounded-3xl shadow-[0_8px_32px_rgb(0,0,0,0.08)] overflow-hidden p-8 relative z-10">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="text-center">
+            <div class="w-20 h-20 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 transform -rotate-3 shadow-lg shadow-indigo-200">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-600 mb-3">FindYourVibe</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed font-light">ค้นหาตัวตนที่ใช่ หาแนวทางที่ชอบ ก่อนไปพูดคุยกับพี่แนะแนวส่วนตัวของคุณ</p>
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium py-4 rounded-2xl hover:from-indigo-700 hover:to-purple-700 shadow-xl shadow-indigo-200 transition-all duration-300 active:scale-[0.98] text-lg">
+                เริ่มทำแบบทดสอบเลย ✨
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="mb-8 flex justify-between items-center text-sm font-medium text-slate-500">
+                <span id="question-counter" class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">ข้อ 1 / 3</span>
+                <div class="w-32 h-2.5 bg-slate-200/50 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-1/3 transition-all duration-500 ease-out rounded-full"></div>
+                </div>
+            </div>
+            <h2 id="question-text" class="text-2xl font-semibold mb-6 text-slate-800 leading-snug">คำถาม</h2>
+            <div id="options-container" class="space-y-4">
+                <!-- Options injected here -->
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden text-center">
+            <div class="w-28 h-28 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-purple-200 border-4 border-white">
+                <span class="text-5xl">🎯</span>
+            </div>
+            <h2 class="text-xl font-medium text-slate-500 mb-2">Vibe ของคุณคือ...</h2>
+            <p id="vibe-result" class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-600 mb-8 py-2">สายลงมือทำ (Doer)</p>
+            <p class="text-slate-600 mb-8 text-sm leading-relaxed">ข้อมูลของคุณพร้อมแล้ว! นำผลลัพธ์นี้ไปพูดคุยกับพี่แนะแนว AI เพื่อรับคำปรึกษาแบบเอ็กซ์คลูซีฟได้เลย</p>
+            <button onclick="goToChat()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium py-4 rounded-2xl shadow-xl shadow-indigo-200 transition-all duration-300 flex justify-center items-center gap-2 group active:scale-[0.98] text-lg">
+                แชตกับพี่แนะแนว 
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "เวลาว่างในวันหยุด คุณชอบทำอะไรมากที่สุด?",
+                options: [
+                    { text: "🛠️ ซ่อมแซมของใช้ ประดิษฐ์ของ หรือทำกิจกรรมที่ต้องขยับตัว", type: "สายลงมือทำ (Realistic)" },
+                    { text: "📚 อ่านหนังสือ หาข้อมูลเรื่องที่สนใจ หรือทดลองอะไรใหม่ๆ", type: "สายนักคิด (Investigative)" },
+                    { text: "🎨 วาดรูป ฟังเพลง ดูหนัง หรือสร้างสรรค์ผลงานศิลปะ", type: "สายศิลปิน (Artistic)" }
+                ]
+            },
+            {
+                text: "ถ้าได้ทำงานกลุ่ม คุณมักจะรับบทบาทไหน?",
+                options: [
+                    { text: "⚡ คนลงมือทำ หรือจัดการให้งานเสร็จตามเป้าหมาย", type: "สายลงมือทำ (Realistic)" },
+                    { text: "🔍 คนหาข้อมูล วิเคราะห์ และวางแผนการทำงาน", type: "สายนักคิด (Investigative)" },
+                    { text: "💡 คนออกแบบ จัดหน้าตา หรือคิดไอเดียแปลกใหม่นำเสนอ", type: "สายศิลปิน (Artistic)" }
+                ]
+            },
+            {
+                text: "วิชาที่คุณรู้สึกว่า 'นี่แหละทางของเรา' คือวิชาแนวไหน?",
+                options: [
+                    { text: "🏃 พละศึกษา การงานอาชีพ หรือวิชาที่ได้ปฏิบัติจริง", type: "สายลงมือทำ (Realistic)" },
+                    { text: "🔬 วิทยาศาสตร์ คณิตศาสตร์ หรือวิชาที่ต้องใช้ตรรกะ", type: "สายนักคิด (Investigative)" },
+                    { text: "🎭 ศิลปะ ดนตรี ภาษา หรือวิชาที่ได้ใช้จินตนาการ", type: "สายศิลปิน (Artistic)" }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        const scores = {
+            "สายลงมือทำ (Realistic)": 0,
+            "สายนักคิด (Investigative)": 0,
+            "สายศิลปิน (Artistic)": 0
+        };
+
+        function startQuiz() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-text').textContent = q.text;
+            document.getElementById('question-counter').textContent = `ข้อ ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-5 rounded-2xl bg-white/50 border border-white hover:border-indigo-300 hover:bg-white text-slate-700 hover:text-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-4 focus:ring-indigo-100 animate-fade-in text-[15px]";
+                btn.style.animationDelay = `${index * 100}ms`;
+                btn.innerHTML = `<span class="block">${opt.text}</span>`;
+                btn.onclick = () => selectOption(opt.type);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(type) {
+            scores[type]++;
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            let maxScore = -1;
+            let finalVibe = "";
+            for (const [vibe, score] of Object.entries(scores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    finalVibe = vibe;
+                }
+            }
+            
+            document.getElementById('vibe-result').textContent = finalVibe;
+            sessionStorage.setItem('user_vibe', finalVibe);
+        }
+
+        function goToChat() {
+            window.location.href = 'chat.html';
+        }
+    </script>
+</body>
+</html>
