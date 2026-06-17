@@ -37,14 +37,28 @@
                     <p id="vibe-status" class="text-indigo-600 text-xs font-medium truncate">กำลังคุยกับ...</p>
                 </div>
             </div>
-            <!-- Mobile Feedback & Report Buttons (hidden on desktop) -->
-            <div class="flex items-center gap-1 md:hidden shrink-0">
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTPRJLoiAcuaV5b6lwrlsuFC8xCp5IU_6Z4CwQKAC0bNsKMA/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="text-rose-500 hover:bg-rose-50 p-2 rounded-full transition-colors" title="รายงานปัญหา">
-                    <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                </a>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPoL6Ui7YZ0m9kx8Q1LcCkMj-sQTNsjw7Ba31RBOx_NOfjSw/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="text-indigo-600 hover:bg-indigo-50 p-2 rounded-full transition-colors" title="ส่ง Feedback">
-                    <svg class="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                </a>
+            <!-- Dropdown Menu -->
+            <div class="relative shrink-0">
+                <button onclick="toggleMenu()" id="menu-btn" class="text-slate-400 hover:text-indigo-600 transition-colors p-2 rounded-full hover:bg-indigo-50 shrink-0 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                    </svg>
+                </button>
+                <!-- Dropdown items -->
+                <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl z-50 py-2 transform origin-top-right transition-all">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTPRJLoiAcuaV5b6lwrlsuFC8xCp5IU_6Z4CwQKAC0bNsKMA/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-rose-50 hover:text-rose-600 transition-colors">
+                        <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        รายงานปัญหา
+                    </a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPoL6Ui7YZ0m9kx8Q1LcCkMj-sQTNsjw7Ba31RBOx_NOfjSw/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        ส่ง Feedback
+                    </a>
+                </div>
             </div>
             <button onclick="window.location.href='index.html'" class="text-slate-400 hover:text-indigo-600 transition-colors p-2 rounded-full hover:bg-indigo-50 shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -183,6 +197,20 @@
                 behavior: 'smooth'
             });
         }
+
+        function toggleMenu() {
+            const menu = document.getElementById('dropdown-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (e) => {
+            const menu = document.getElementById('dropdown-menu');
+            const menuBtn = document.getElementById('menu-btn');
+            if (menu && !menu.classList.contains('hidden') && !menuBtn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
     </script>
 
     <!-- Floating Action Buttons (Desktop only to prevent overlapping on mobile) -->
