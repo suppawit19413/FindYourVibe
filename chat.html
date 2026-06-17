@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindYourVibe - คุยกับพี่แนะแนว</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Prompt', sans-serif; }
@@ -18,25 +28,36 @@
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
+        .dark .glass-header {
+            background: rgba(15, 23, 42, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
-<body class="bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center text-slate-800 min-h-[100dvh] h-[100dvh] flex flex-col items-center justify-center p-0 md:p-6 relative overflow-hidden">
+<body class="bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-center text-slate-800 dark:text-slate-100 min-h-[100dvh] h-[100dvh] flex flex-col items-center justify-center p-0 md:p-6 relative overflow-hidden transition-colors duration-300">
     <!-- Overlay -->
-    <div class="absolute inset-0 bg-slate-900/10 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 bg-slate-900/10 dark:bg-slate-950/40 backdrop-blur-sm"></div>
 
-    <div class="w-full max-w-lg h-full md:h-[90vh] bg-white/95 backdrop-blur-md md:rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative z-10 border border-white/50">
+    <div class="w-full max-w-lg h-full md:h-[90vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md md:rounded-[2rem] shadow-2xl flex flex-col overflow-hidden relative z-10 border border-white/50 dark:border-slate-800/50">
         <!-- Header -->
         <div class="glass-header p-5 z-10 flex items-center gap-4">
-            <div class="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-indigo-200 text-white text-xl">
+            <div class="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-indigo-200 dark:shadow-none text-white text-xl">
                 👩‍🏫
             </div>
             <div class="flex-1 min-w-0">
-                <h1 class="font-semibold text-slate-800 text-lg leading-tight truncate">พี่แนะแนวใจดี</h1>
+                <h1 class="font-semibold text-slate-800 dark:text-slate-200 text-lg leading-tight truncate">พี่แนะแนวใจดี</h1>
                 <div class="flex items-center gap-1.5 mt-0.5">
                     <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <p id="vibe-status" class="text-indigo-600 text-xs font-medium truncate">กำลังคุยกับ...</p>
+                    <p id="vibe-status" class="text-indigo-600 dark:text-indigo-400 text-xs font-medium truncate">กำลังคุยกับ...</p>
                 </div>
             </div>
+            <!-- Dark Mode Toggle Button -->
+            <button onclick="toggleTheme()" class="text-slate-400 hover:text-indigo-600 transition-colors p-2 rounded-full hover:bg-indigo-50 dark:hover:bg-slate-800 shrink-0 focus:outline-none dark:text-slate-500 dark:hover:text-amber-400">
+                <!-- Sun icon -->
+                <svg class="w-6 h-6 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 2.293a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zm2.707 5.707a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-2.293 4a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM11 17a1 1 0 100-2H9a1 1 0 100 2h2zm-7.707-1.293a1 1 0 011.414-1.414l.707.707a1 1 0 11-1.414 1.414l-.707-.707zm-.707-5.707a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 9a1 1 0 100 2H2a1 1 0 100-2h1zm2.293-5.707a1 1 0 010-1.414l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+                <!-- Moon icon -->
+                <svg class="w-6 h-6 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            </button>
             <!-- Dropdown Menu -->
             <div class="relative shrink-0">
                 <button onclick="toggleMenu()" id="menu-btn" class="text-slate-400 hover:text-indigo-600 transition-colors p-2 rounded-full hover:bg-indigo-50 shrink-0 focus:outline-none">
@@ -45,15 +66,15 @@
                     </svg>
                 </button>
                 <!-- Dropdown items -->
-                <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white/95 backdrop-blur-md border border-slate-100 rounded-2xl shadow-xl z-50 py-2 transform origin-top-right transition-all">
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTPRJLoiAcuaV5b6lwrlsuFC8xCp5IU_6Z4CwQKAC0bNsKMA/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-rose-50 hover:text-rose-600 transition-colors">
-                        <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-100 dark:border-slate-800 rounded-2xl shadow-xl z-50 py-2 transform origin-top-right transition-all">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdTPRJLoiAcuaV5b6lwrlsuFC8xCp5IU_6Z4CwQKAC0bNsKMA/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition-colors">
+                        <svg class="w-4 h-4 text-rose-500 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                         </svg>
                         รายงานปัญหา
                     </a>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPoL6Ui7YZ0m9kx8Q1LcCkMj-sQTNsjw7Ba31RBOx_NOfjSw/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
-                        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPoL6Ui7YZ0m9kx8Q1LcCkMj-sQTNsjw7Ba31RBOx_NOfjSw/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                        <svg class="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
                         ส่ง Feedback
@@ -66,17 +87,17 @@
         </div>
 
         <!-- Chat Area -->
-        <div id="chat-box" class="flex-1 overflow-y-auto p-5 space-y-6 bg-slate-50/50 flex flex-col relative scroll-smooth">
+        <div id="chat-box" class="flex-1 overflow-y-auto p-5 space-y-6 bg-slate-50/50 dark:bg-slate-950/40 flex flex-col relative scroll-smooth">
             <!-- Messages will be injected here -->
         </div>
 
         <!-- Input Area -->
-        <div class="bg-white/90 backdrop-blur-md p-4 border-t border-slate-100">
+        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-4 border-t border-slate-100 dark:border-slate-800">
             <form id="chat-form" class="flex gap-3 items-end">
-                <div class="flex-1 bg-slate-100 rounded-3xl relative border border-slate-200/50 shadow-inner">
-                    <input type="text" id="message-input" class="w-full bg-transparent text-slate-800 px-5 py-3.5 focus:outline-none focus:ring-0 placeholder-slate-400" placeholder="พิมพ์ข้อความที่นี่..." autocomplete="off">
+                <div class="flex-1 bg-slate-100 dark:bg-slate-950 rounded-3xl relative border border-slate-200/50 dark:border-slate-800 shadow-inner">
+                    <input type="text" id="message-input" class="w-full bg-transparent text-slate-800 dark:text-slate-200 px-5 py-3.5 focus:outline-none focus:ring-0 placeholder-slate-400 dark:placeholder-slate-500" placeholder="พิมพ์ข้อความที่นี่..." autocomplete="off">
                 </div>
-                <button type="submit" id="send-btn" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white w-14 h-14 rounded-full flex items-center justify-center hover:from-indigo-700 hover:to-purple-700 transition-all shrink-0 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 shadow-lg shadow-indigo-200">
+                <button type="submit" id="send-btn" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white w-14 h-14 rounded-full flex items-center justify-center hover:from-indigo-700 hover:to-purple-700 transition-all shrink-0 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 shadow-lg shadow-indigo-200 dark:shadow-none">
                     <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
                 </button>
             </form>
@@ -141,13 +162,13 @@
             
             const bubble = document.createElement('div');
             if (sender === 'user') {
-                bubble.className = "bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-5 py-3 rounded-2xl rounded-br-sm max-w-[85%] shadow-md shadow-indigo-100 text-[15px] break-words";
+                bubble.className = "bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white px-5 py-3 rounded-2xl rounded-br-sm max-w-[85%] shadow-md shadow-indigo-100 dark:shadow-none text-[15px] break-words";
                 bubble.textContent = text;
             } else if (sender === 'ai') {
-                bubble.className = "bg-white text-slate-700 px-5 py-3 rounded-2xl rounded-tl-sm max-w-[85%] shadow-md shadow-slate-200/50 text-[15px] border border-slate-100 break-words leading-relaxed";
+                bubble.className = "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-5 py-3 rounded-2xl rounded-tl-sm max-w-[85%] shadow-md shadow-slate-200/50 dark:shadow-none text-[15px] border border-slate-100 dark:border-slate-700/60 break-words leading-relaxed";
                 bubble.innerHTML = text.replace(/\n/g, '<br>');
             } else {
-                bubble.className = "bg-red-50 text-red-500 px-5 py-3 rounded-2xl max-w-[85%] text-sm text-center mx-auto border border-red-100";
+                bubble.className = "bg-red-50 dark:bg-red-950/20 text-red-500 dark:text-red-400 px-5 py-3 rounded-2xl max-w-[85%] text-sm text-center mx-auto border border-red-100 dark:border-red-900/30";
                 bubble.textContent = text;
             }
 
@@ -168,7 +189,7 @@
             msgDiv.className = `flex justify-start w-full transform transition-all duration-300 translate-y-4 opacity-0`;
             
             const bubble = document.createElement('div');
-            bubble.className = "bg-white px-5 py-4 rounded-2xl rounded-tl-sm shadow-md shadow-slate-200/50 border border-slate-100 flex gap-2 items-center";
+            bubble.className = "bg-white dark:bg-slate-800 px-5 py-4 rounded-2xl rounded-tl-sm shadow-md shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/60 flex gap-2 items-center";
             bubble.innerHTML = `
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
                 <div class="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
@@ -211,6 +232,16 @@
                 menu.classList.add('hidden');
             }
         });
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        }
     </script>
 
     <!-- Floating Action Buttons (Desktop only to prevent overlapping on mobile) -->
